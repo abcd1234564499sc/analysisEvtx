@@ -20,7 +20,7 @@ class AnalysisEvtx:
                                "EventRecordID", "Execution.ProcessID", "Execution.ThreadID", "Channel",
                                "Computer", "ProcessID", "Application", "Direction", "SourceAddress", "SourcePort",
                                "DestAddress", "DestPort", "Protocol", "RemoteUserID", "RemoteMachineID",
-                               "Security.UserID", "QueryName", "EventSourceName", "Data"]
+                               "Security.UserID", "QueryName", "EventSourceName", "Data", "Binary"]
         self.filePath = filePath
         self.startAnalysis()
 
@@ -64,19 +64,15 @@ class AnalysisEvtx:
                 else:
                     pass
         for item in dataObj:
-            nowTag = "}".join(item.tag.split("}")[1:])
-            if item.text is None:
-                for tmpName, tmpValue in item.items():
-                    tmpNowTag = nowTag + "." + tmpName
-                    if self.checkIfRequire(tmpNowTag, self.requireTagList):
-                        reDic = self.writeToDic(reDic, tmpNowTag, tmpValue)
-                    else:
-                        pass
+            tmpAttrDic = {key: value for key, value in item.items()}
+            if "Name" in tmpAttrDic.keys():
+                nowTag = tmpAttrDic["Name"]
             else:
-                if self.checkIfRequire(nowTag, self.requireTagList):
-                    reDic = self.writeToDic(reDic, nowTag, item.text)
-                else:
-                    pass
+                nowTag = "Data"
+            if self.checkIfRequire(nowTag, self.requireTagList):
+                reDic = self.writeToDic(reDic, nowTag, item.text)
+            else:
+                pass
         return reDic
 
     def checkIfRequire(self, tagName, requireList):
@@ -88,6 +84,8 @@ class AnalysisEvtx:
         return ifRequire
 
     def writeToDic(self, aimDic, key, value):
+        if value is None:
+            value = ""
         if aimDic[key] == "":
             aimDic[key] = value
         else:
@@ -137,5 +135,5 @@ if __name__ == '__main__':
         except Exception as ex:
             print("发生异常：" + str(ex))
         ifContinue = input("\n是否继续解析？(y/n):")
-        ifContinue = "y" if ifContinue=="" else ifContinue
+        ifContinue = "y" if ifContinue == "" else ifContinue
         print("")
