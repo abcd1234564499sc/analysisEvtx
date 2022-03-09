@@ -65,14 +65,17 @@ class AnalysisEvtx:
                     pass
         for item in dataObj:
             tmpAttrDic = {key: value for key, value in item.items()}
+            nowValue = item.text
             if "Name" in tmpAttrDic.keys():
                 nowTag = tmpAttrDic["Name"]
+                if not self.checkIfRequire(nowTag, self.requireTagList):
+                    nowTag = "Data"
+                    nowValue = tmpAttrDic["Name"]+":"+("" if item.text is None else item.text)
+                else:
+                    pass
             else:
                 nowTag = "Data"
-            if self.checkIfRequire(nowTag, self.requireTagList):
-                reDic = self.writeToDic(reDic, nowTag, item.text)
-            else:
-                pass
+            reDic = self.writeToDic(reDic, nowTag, nowValue)
         return reDic
 
     def checkIfRequire(self, tagName, requireList):
