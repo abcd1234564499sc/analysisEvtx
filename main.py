@@ -39,7 +39,7 @@ class AnalysisEvtx:
                     xmlList.append(xml)
                     resultDicList.append(reDic)
                     nowCount = nowCount + 1
-            print("解析完成\n")
+            print("<--解析完成\n")
         return xmlList, resultDicList
 
     def analysisXml(self, xmlStr):
@@ -128,7 +128,7 @@ class AnalysisEvtx:
         fileName = "解析结果-{0}-{1}".format(self.fileName,
                                          myUtils.getNowSeconed().replace("-", "").replace(" ", "").replace(":", ""))
         myUtils.saveExcell(wb, saveName=fileName)
-        print("成功导出文件：{0}.xlsx".format(fileName))
+        print("<--成功导出文件：{0}.xlsx".format(fileName))
 
 
 if __name__ == '__main__':
