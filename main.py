@@ -34,7 +34,7 @@ class AnalysisEvtx:
                 # 遍历事件
                 nowCount = 1
                 for xml, record in evtx_file_xml_view(fh):
-                    print("解析第{0}条事件".format(nowCount))
+                    print("\r解析第{0}条事件".format(nowCount),end="")
                     reDic = self.analysisXml(xml)
                     xmlList.append(xml)
                     resultDicList.append(reDic)
@@ -70,7 +70,7 @@ class AnalysisEvtx:
                 nowTag = tmpAttrDic["Name"]
                 if not self.checkIfRequire(nowTag, self.requireTagList):
                     nowTag = "Data"
-                    nowValue = tmpAttrDic["Name"]+":"+("" if item.text is None else item.text)
+                    nowValue = tmpAttrDic["Name"] + ":" + ("" if item.text is None else item.text)
                 else:
                     pass
             else:
@@ -110,9 +110,11 @@ class AnalysisEvtx:
         myUtils.writeExcellHead(ws, ["序号"] + self.requireTagList)
         # 写入内容
         for index, nowResultDic in enumerate(resultDicList):
+            print("\r正在写入{0}/{1}行".format(str(index + 1), len(resultDicList)), end="")
             myUtils.writeExcellCell(ws, index + 2, 1, str(index + 1), 0, True)
             for colIndex, nowKey in enumerate(self.requireTagList):
-                myUtils.writeExcellCell(ws, index + 2, colIndex + 2, str(nowResultDic[nowKey]), 0, True)
+                myUtils.writeExcellCell(ws, index + 2, colIndex + 2,
+                                        " " if str(nowResultDic[nowKey]) == "" else str(nowResultDic[nowKey]), 0, True)
             myUtils.writeExcellSpaceCell(ws, index + 2, len(self.requireTagList) + 2)
 
         # 设置列宽
